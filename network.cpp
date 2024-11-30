@@ -1,47 +1,28 @@
-#include <iostream>
-#include <ws2tcpip.h>
-#pragma comment(lib ,"ws2_32.lib")
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 using namespace std ;
 
+const char* host = "0.0.0.0" ;
+int port = 7000 ;
+
 int main(){
-    string ipAddress = "127.0.0.1" ;
-    int port ;
+    int sock_fd ,new_fd ;
+    socklen_t addrlen ;
+    struct sockaddr_in my_addr, clinet_addr ;
+    int status ;
+    char indata[1024] = {0} ,outdata[1024] = {0} ;
+    int on = 1 ;
 
-    //Strat Socket
-    WSADATA data ;
-    WORD wordVer = MAKEWORD(2, 2) ;
-    int wsResult =WSAStartup(wordVer ,&data) ;
-    if(wsResult != 0){
-        cerr << "Error : Starting Socket - Err#" << wsResult <<endl ;
-        return ;
+    //create a socket 
+    sock_fd = socket(AF_INET ,SOCK_STREAM ,0) ;
+    if(sock_fd == -1){
+        perror("Socket creation failed") ;
+        exit(1) ;
     }
 
-    //Create Socket
-    SOCKET sock = socket (AF_INET ,SOCK_STREAM ,0) ;
-    if(sock = INVALID_SOCKET){
-        cerr << "Error : Creating Socket - Err#" << WSAGetLastError() <<endl ;
-        return ;
-    }
-
-    sockaddr_in hint ;
-    hint.sin_family = AF_INET ;
-    hint.sin_port = htons(port) ;
-    //inet_pton(AF_INET ,ipAddress.c_str() ,&hint.sin_addr) ;
-
-    //Connect
-    int connResult = connect(sock ,(sockaddr*)&hint ,sizeof(hint)) ;
-    if (connResult == SOCKET_ERROR){
-        cerr << "Error : Connect - Error#" << WSAGetLastError() <<endl ;
-        closesocket(sock) ;
-        WSACleanup() ;
-        return ;
-    }
-
-    //Send and Receive
-    char buf[4096] ;
-    string userInput ;
-    do{
-        getline(cin ,userInput) ;
-
-    }while(userInput.size() > 0) ;
 }
